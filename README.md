@@ -1,58 +1,97 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# MyStore — Laravel E-Commerce Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A relational product-catalog backend built with **Laravel 11** and **MySQL**. It models a five-table e-commerce catalog (products, categories, colors, sizes, brands) with foreign-key relationships, and exposes full resource-based CRUD for every entity.
 
-## About Laravel
+## Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Framework:** Laravel 11
+- **Database:** MySQL / MariaDB
+- **PHP:** 8.2+
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Schema
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Five related tables, with `products` holding foreign keys into the other four:
 
-## Learning Laravel
+| Table        | Key columns                                                                 |
+|--------------|-------------------------------------------------------------------------------|
+| `categories` | `name`, `status`                                                              |
+| `colors`     | `name`, `status`                                                              |
+| `sizes`      | `name`, `status`                                                              |
+| `brands`     | `name`, `status`                                                              |
+| `products`   | `sku`, `name`, `description`, `barcode`, `price`, `sale_price`, `sale`, `stock`, `weight`, `width`, `height`, `length`, `vat`, plus `category_id`, `color_id`, `size_id`, `brand_id` (FKs) |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+All tables are created and versioned through Laravel migrations — see `database/migrations/`.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Features
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- Eloquent models with `belongsTo` / `hasMany` relationships across all five tables
+- Resource-based CRUD (`Route::resource`) for every entity — index, create, store, edit, update, destroy
+- Server-side request validation on every store/update action (required fields, numeric bounds, `exists:` checks on foreign keys, `enum`-backed status fields)
+- Blade views for listing, creating, and editing each entity
 
-## Agentic Development
+## Getting Started
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Prerequisites
+
+- PHP 8.2+
+- Composer
+- MySQL/MariaDB — via [XAMPP](https://www.apachefriends.org/) (Windows/macOS) or a standalone install
+- A GUI client like [DBeaver](https://dbeaver.io/) to manage the database (optional but handy)
+
+> **Using XAMPP?** Open the XAMPP Control Panel and start the **MySQL** module (Apache isn't required — `php artisan serve` runs its own server). Default credentials are `root` with no password, and MySQL listens on port `3306`.
+
+### Setup
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/soniapeiov/MyStore.git
+cd MyStore
+composer install
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Create a database named `mystore` — a few ways to do this:
 
-## Contributing
+- **XAMPP:** with MySQL running, open **phpMyAdmin** from the Control Panel → **Databases** tab → create `mystore`.
+- **MySQL CLI:**
+  ```sql
+  CREATE DATABASE mystore;
+  ```
+- **DBeaver:** right-click your MySQL connection → **Create New Database** → name it `mystore`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Update `.env` with your database credentials:
 
-## Code of Conduct
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=mystore
+DB_USERNAME=root
+DB_PASSWORD=yourpassword
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Run the migrations:
 
-## Security Vulnerabilities
+```bash
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Start the dev server:
+
+```bash
+php artisan serve
+```
+
+Visit `http://127.0.0.1:8000` — start by adding a few categories, colors, sizes, and brands before creating products, since products require those foreign keys.
+
+## Inspecting the Database
+
+If you use DBeaver, connect to your local MySQL instance and open the `mystore` database — the ER view (right-click the database → **View Diagram**) is a quick way to confirm the `products` foreign keys are wired up correctly after migrating.
+
+## Routes
+
+Run `php artisan route:list` to see the full set of generated resource routes for `products`, `categories`, `colors`, `sizes`, and `brands`.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project was built as part of an academic assignment (Programação Web Servidor, ISLA).
