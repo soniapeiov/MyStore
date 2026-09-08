@@ -1,12 +1,12 @@
 # MyStore — Laravel E-Commerce Backend
 
-A relational product-catalog backend built with **Laravel 11** and **MySQL**. It models a five-table e-commerce catalog (products, categories, colors, sizes, brands) with foreign-key relationships, and exposes full resource-based CRUD for every entity.
+A relational product-catalog backend built with **Laravel 13** and **MySQL**. It models a five-table e-commerce catalog (products, categories, colors, sizes, brands) with foreign-key relationships, and exposes full resource-based CRUD for every entity.
 
 ## Tech Stack
 
-- **Framework:** Laravel 11
+- **Framework:** Laravel 13.31.0
 - **Database:** MySQL / MariaDB
-- **PHP:** 8.2+
+- **PHP:** 8.5+
 
 ## Schema
 
@@ -33,7 +33,7 @@ All tables are created and versioned through Laravel migrations — see `databas
 
 ### Prerequisites
 
-- PHP 8.2+
+- PHP 8.5+
 - Composer
 - MySQL/MariaDB — via [XAMPP](https://www.apachefriends.org/) (Windows/macOS) or a standalone install
 - A GUI client like [DBeaver](https://dbeaver.io/) to manage the database (optional but handy)
